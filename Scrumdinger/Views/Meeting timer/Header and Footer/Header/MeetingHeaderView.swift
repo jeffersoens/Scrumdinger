@@ -36,7 +36,7 @@ struct MeetingHeaderView: View {
             HStack {
                 
                 VStack(alignment: .leading) {
-                    Text("Seconds Elapsed")
+                    Text("Seconds elapsed")
                         .font(.caption)
                     Label("\(secondsElapsed)", systemImage: "hourglass.bottomhalf.fill")
                 }
@@ -44,7 +44,7 @@ struct MeetingHeaderView: View {
                 Spacer()
                 
                 VStack(alignment: .trailing) {
-                    Text("Seconds Remaining")
+                    Text("Seconds remaining")
                         .font(.caption)
                     Label("\(secondsRemaining)", systemImage: "hourglass.tophalf.fill")
                         .labelStyle(.trailingIcon)

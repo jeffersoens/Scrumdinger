@@ -9,25 +9,26 @@ import SwiftUI
 
 struct DetailView: View {
     
-    @State private var data = DailyScrum.Data()
-    @State private var isPresentingEditView = false
-    
     @Binding var scrum: DailyScrum
+    
+    @State private var editingScrum = DailyScrum.emptyScrum
+    @State private var isPresentingEditView = false
     
     var body: some View {
         List {
-             Section("Meeting Info") {
+             Section("Meeting info") {
                  NavigationLink {
                      MeetingView(scrum: $scrum)
+                         .navigationTitle("\(scrum.title) meeting")
                  } label: {
-                     Label("Start Meeting", systemImage: "timer")
+                     Label("Start meeting", systemImage: "timer")
                          .font(.headline)
                          .foregroundColor(.accentColor)
                  }
                 HStack {
                     Label("Lenght", systemImage: "clock")
                     Spacer()
-                    Text("\(scrum.lengthInMinutes) minutes")
+                    Text("\(Int(scrum.lengthInMinutes)) minutes")
                 }
                 .accessibilityElement(children: .combine)
                  HStack {
@@ -47,10 +48,20 @@ struct DetailView: View {
             }
         }
         .navigationTitle(scrum.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            Button {
+                editingScrum = scrum
+                isPresentingEditView.toggle()
+            } label: {
+                Text("Edit")
+            }
+
+        }
         .sheet(isPresented: $isPresentingEditView) {
             NavigationStack {
-                DetailEditView(data: $data)
-                    .navigationTitle(scrum.title)
+                DetailEditView(data: $editingScrum)
+                    .navigationTitle(editingScrum.title)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button {
@@ -62,22 +73,13 @@ struct DetailView: View {
                         ToolbarItem(placement: .confirmationAction) {
                             Button {
                                 isPresentingEditView.toggle()
-                                scrum.update(from: data)
+                                scrum = editingScrum
                             } label: {
                                 Text("Save")
                             }
                         }
                     }
             }
-        }
-        .toolbar {
-            Button {
-                isPresentingEditView.toggle()
-                data = scrum.data
-            } label: {
-                Text("Edit")
-            }
-
         }
     }
 }

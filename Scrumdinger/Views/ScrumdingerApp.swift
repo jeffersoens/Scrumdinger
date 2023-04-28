@@ -17,6 +17,8 @@ struct ScrumdingerApp: App {
         WindowGroup {
             NavigationStack {
                 ScrumsView(scrums: $scrums)
+                    .navigationTitle("Your daily scrums")
+                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }

@@ -31,7 +31,9 @@ struct MeetingFooterView: View {
     var body: some View {
         VStack {
             if isLastSpeaker {
-                Text("Last Speaker")
+                VStack {
+                    Text("Last speaker")
+                }
             } else {
                 HStack {
                     Text(speakerText)

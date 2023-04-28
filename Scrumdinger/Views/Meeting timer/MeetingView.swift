@@ -44,7 +44,7 @@ struct MeetingView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             scrumTimer.reset(
-                lengthInMinutes: scrum.lengthInMinutes,
+                lengthInMinutes: Int(scrum.lengthInMinutes),
                 attendees: scrum.attendees)
             scrumTimer.speakerChangedAction = {
                 player.seek(to: .zero)
