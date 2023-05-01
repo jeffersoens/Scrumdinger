@@ -10,15 +10,30 @@ import SwiftUI
 @main
 struct ScrumdingerApp: App {
     
-    @State private var scrums = DailyScrum.sampleData
-    
+    @StateObject private var store = ScrumStore()
     
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ScrumsView(scrums: $scrums)
-                    .navigationTitle("Your daily scrums")
-                    .navigationBarTitleDisplayMode(.inline)
+                ScrumsView(scrums: $store.scrums) {
+                    Task {
+                        do {
+                            try await store.save(scrums: store.scrums)
+                        } catch {
+                            print("not saved")
+                            fatalError(error.localizedDescription)
+                        }
+                    }
+                }
+                    .task {
+                        do {
+                            try await store.load()
+                        } catch {
+                            print("not loaded")
+                            fatalError(error.localizedDescription)
+                        }
+                        
+                    }
             }
         }
     }
