@@ -15,7 +15,7 @@ struct NewScrumSheet: View {
     
     var body: some View {
         NavigationStack {
-            DetailEditView(data: $newScrum)
+            DetailEditView(isNewScrum: true, data: $newScrum)
                 .navigationTitle(newScrum.title)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
