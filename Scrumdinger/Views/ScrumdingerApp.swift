@@ -14,26 +14,24 @@ struct ScrumdingerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ScrumsView(scrums: $store.scrums) {
-                    Task {
-                        do {
-                            try await store.save(scrums: store.scrums)
-                        } catch {
-                            print("not saved")
-                            fatalError(error.localizedDescription)
-                        }
+            ScrumsView(scrums: $store.scrums) {
+                //saveAction()
+                Task {
+                    do {
+                        try await store.save(scrums: store.scrums)
+                    } catch {
+                        fatalError(error.localizedDescription)
                     }
                 }
-                    .task {
-                        do {
-                            try await store.load()
-                        } catch {
-                            print("not loaded")
-                            fatalError(error.localizedDescription)
-                        }
-                        
-                    }
+            }
+            // грузит scrums перед тем, как отобразить View
+            .task {
+                do {
+                    try await store.load()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+                
             }
         }
     }

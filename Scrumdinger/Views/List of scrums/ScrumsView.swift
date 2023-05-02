@@ -15,37 +15,41 @@ struct ScrumsView: View {
     let saveAction: () -> Void
     
     var body: some View {
-        List {
-            ForEach($scrums) { $scrum in
-                NavigationLink {
-                    DetailView(scrum: $scrum)
-                } label: {
-                    CardView(scrum: scrum)
+        NavigationStack {
+            List {
+                ForEach($scrums) { $scrum in
+                    NavigationLink {
+                        DetailView(scrum: $scrum)
+                    } label: {
+                        CardView(scrum: scrum)
+                    }
+                    .listRowBackground(scrum.theme.mainColor)
                 }
-                .listRowBackground(scrum.theme.mainColor)
+                .onDelete { indices in
+                    scrums.remove(atOffsets: indices)
+                }
+            }
+            .navigationTitle("Your daily scrums")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button {
+                    isPresentingNewScrumView.toggle()
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("New Scrum")
             }
         }
-        .navigationTitle("Your daily scrums")
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isPresentingNewScrumView) {
             NewScrumSheet(
                 isPresentingNewScrumView: $isPresentingNewScrumView,
                 scrums: $scrums)
         }
-        .toolbar {
-            Button {
-                isPresentingNewScrumView.toggle()
-            } label: {
-                Image(systemName: "plus")
-            }
-            .accessibilityLabel("New Scrum")
-        }
         .onChange(of: scenePhase) { phase in
-            if phase == .inactive {
+            if phase == .inactive || phase == .background {
                 saveAction()
             }
         }
-        
     }
 }
 
