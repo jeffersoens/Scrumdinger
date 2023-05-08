@@ -11,6 +11,7 @@ import SwiftUI
 struct ScrumdingerApp: App {
     
     @StateObject private var store = ScrumStore()
+    @State private var errorWrapper: ErrorWarapper?
     
     var body: some Scene {
         WindowGroup {
@@ -20,7 +21,8 @@ struct ScrumdingerApp: App {
                     do {
                         try await store.save(scrums: store.scrums)
                     } catch {
-                        fatalError(error.localizedDescription)
+                        errorWrapper = ErrorWarapper(error: error,
+                                                     guidance: "Please try again later")
                     }
                 }
             }
@@ -29,10 +31,16 @@ struct ScrumdingerApp: App {
                 do {
                     try await store.load()
                 } catch {
-                    fatalError(error.localizedDescription)
+                    errorWrapper = ErrorWarapper(error: error,
+                                                 guidance: "Scrumdinger will load sample data and continue.")
                 }
                 
             }
+            .sheet(item: $errorWrapper, onDismiss: {
+                store.scrums = DailyScrum.sampleData
+            }, content: { wrapper in
+                ErrorView(errorWrapper: wrapper)
+            })
         }
     }
 }
